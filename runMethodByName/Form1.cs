@@ -19,9 +19,9 @@ namespace runMethodByName
 
         private void btnRun_Click(object sender, EventArgs e)
         {
-            Invoker.CreateAndInvoke("runMethodByName.Tester", null, "TestMethod", null);
+            Invoker.CreateAndInvoke(txtClassName.Text, null, txtMethodName.Text, null);
 
-            Invoker.CreateAndInvoke("runMethodByName.Tester", new[] { "constructorParam" }, "TestMethodUsingValueFromConstructorAndArgs", new object[] { "moo", false });
+            Invoker.CreateAndInvoke(txtClassName.Text, new[] { txtCp.Text }, "TestMethodUsingValueFromConstructorAndArgs", new object[] { txtArgs.Text, false });
         }
     }
 
@@ -29,11 +29,19 @@ namespace runMethodByName
     {
         public static object CreateAndInvoke(string typeName, object[] constructorArgs, string methodName, object[] methodArgs)
         {
-            Type type = Type.GetType(typeName);
-            object instance = Activator.CreateInstance(type, constructorArgs);
+            try
+            {
+                Type type = Type.GetType(typeName);
+                object instance = Activator.CreateInstance(type, constructorArgs);
 
-            MethodInfo method = type.GetMethod(methodName);
-            return method.Invoke(instance, methodArgs);
+                MethodInfo method = type.GetMethod(methodName);
+                return method.Invoke(instance, methodArgs);
+            }
+            catch (Exception Err)
+            {
+                MessageBox.Show(@"Method is not exists");
+                return null;
+            }
         }
     }
 
